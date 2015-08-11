@@ -1,0 +1,10 @@
+{{template "header.html" .}}
+	<div>
+		<form id="remarkform" accept="/remark/{{.topicid}}" method="post">
+			{{.xsrfdata}}
+			<input type="hidden" name="topicid" value="{{.topicid}}">
+			<h2>Content:</h2>	<textarea name="content" rows="5"></textarea><br><br>
+			<input type="submit">
+		</form>
+	</div>
+{{template "footer.html" .}}
