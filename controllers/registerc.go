@@ -3,7 +3,7 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
-	"github.com/everfore/bbs/models"
+	"github.com/shaalx/bbs/models"
 	"html/template"
 )
 

@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/everfore/bbs/models"
+	"github.com/shaalx/bbs/models"
 	"html/template"
 	"strconv"
 	"strings"

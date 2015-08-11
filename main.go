@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/toolbox"
-	"github.com/everfore/bbs/models"
-	_ "github.com/everfore/bbs/routers"
+	"github.com/shaalx/bbs/models"
+	_ "github.com/shaalx/bbs/routers"
 )
 
 func main() {

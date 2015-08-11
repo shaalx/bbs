@@ -8,7 +8,8 @@ import (
 
 func init() {
 	orm.RegisterDriver("mysql", orm.DR_MySQL)
-	orm.RegisterDataBase("default", "mysql", "root:1234@tcp(localhost:3306)/bbs?charset=utf8")
+	// orm.RegisterDataBase("default", "mysql", "root:1234@tcp(localhost:3306)/bbs?charset=utf8")
+	orm.RegisterDataBase("default", "mysql", "cdb_outerroot:root1234@tcp(55c354e17de4e.sh.cdb.myqcloud.com:7276)/session?charset=utf8")
 	orm.RegisterModel(new(User), new(Topic), new(Remark))
 	ORM = orm.NewOrm()
 	orm.Debug = true
