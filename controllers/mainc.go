@@ -30,6 +30,7 @@ func (c *MainController) Login() {
 	var usr models.User
 	err := c.ParseForm(&usr)
 	beego.Debug("login user:", usr, err)
+	c.Data["curUser"] = &usr
 	if err != nil {
 		c.Abort("403")
 	}
@@ -96,8 +97,9 @@ func (c *MainController) ShowTopic() {
 }
 
 func (c *MainController) Prepare() {
+	user := c.CurUser()
+	c.Data["curUser"] = user
 	uri := c.Ctx.Request.RequestURI
-	beego.Notice(uri)
 	if strings.EqualFold(uri, "/publish") || strings.Contains(uri, "/remark") || strings.Contains(uri, "/del") {
 		c.CheckLogin()
 	}
@@ -138,6 +140,7 @@ func (c *MainController) LogoutSetSession() {
 
 // @router /logout [get]
 func (c *MainController) Logout() {
+	c.Data["curUser"] = nil
 	c.LogoutSetSession()
 	c.Get()
 }
@@ -145,25 +148,25 @@ func (c *MainController) Logout() {
 func (c *MainController) CurUser() *models.User {
 	sess, err := models.GlobalSessions.SessionStart(c.Ctx.ResponseWriter, c.Ctx.Request)
 	if err != nil || sess == nil {
-		c.Abort("401")
+		return nil
 	}
 
 	iuserid := sess.Get("gosessionid")
 	beego.Debug("get [gosessionid] <------- ", iuserid)
 	if iuserid == nil {
-		c.Abort("401")
+		return nil
 	}
 	userid := fmt.Sprintf("%v", iuserid)
 	id, err := strconv.Atoi(userid)
 	if err != nil {
-		c.Abort("401")
+		return nil
 	}
 	if id <= 0 {
-		c.Abort("401")
+		return nil
 	}
 	usr := models.UserById(id)
 	if nil == usr {
-		c.Abort("500")
+		return nil
 	}
 	beego.Debug("current user ----> ", *usr)
 	return usr
@@ -175,6 +178,11 @@ func (c *MainController) DelRemark() {
 	var remarkid int
 	c.Ctx.Input.Bind(&topicid, ":topicid")
 	c.Ctx.Input.Bind(&remarkid, ":remarkid")
+	remark := models.RemarkById(remarkid)
+	curUser := c.CurUser()
+	if remark == nil || (remark.User != nil && curUser != nil && remark.User.Id != curUser.Id) {
+		c.Abort("401")
+	}
 	deled := models.DelRemardById(remarkid)
 	beego.Debug("delremark:", deled)
 	c.Get()
@@ -184,6 +192,11 @@ func (c *MainController) DelRemark() {
 func (c *MainController) DelTopic() {
 	var topicid int
 	c.Ctx.Input.Bind(&topicid, ":topicid")
+	topic := models.TopicById(topicid)
+	curUser := c.CurUser()
+	if topic == nil || (topic.User != nil && curUser != nil && topic.User.Id != curUser.Id) {
+		c.Abort("401")
+	}
 	deled := models.DelTopicById(topicid)
 	beego.Debug("deltopic:", deled)
 	c.Get()
@@ -192,6 +205,9 @@ func (c *MainController) DelTopic() {
 // @router /user [get]
 func (c *MainController) User() {
 	user := c.CurUser()
+	if user == nil {
+		c.Abort("401")
+	}
 	c.Data["user"] = user
 	c.Data["topics"] = models.TopicsById(user.Id)
 	c.Data["remarks"] = models.RemarksByUserId(user.Id)

@@ -21,10 +21,17 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
 			<a class="navbar-brand hidden-sm" href="/">Home</a>
-			<a class="navbar-brand hidden-sm" href="/login">Login</a>
-			<a class="navbar-brand hidden-sm" href="/register">Logup</a>
-			<a class="navbar-brand hidden-sm" href="/logout">Logout</a>
-			<a class="navbar-brand hidden-sm" href="/user">User</a>
+			
+			
+			<ul class="nav navbar-nav navbar-right hidden-sm">
+				{{if .curUser}}
+					<li><a class="navbar-brand hidden-sm" href="/user">{{.curUser.Name}}</a></li>
+					<li><a class="navbar-brand hidden-sm" href="/logout">Logout</a></li>
+				{{else}}
+					<li><a class="navbar-brand hidden-sm" href="/register">Logup</a></li>
+					<li><a class="navbar-brand hidden-sm" href="/login">Login</a></li>
+				{{end}}
+          </ul>
 		</div>
 	</div>
 

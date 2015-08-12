@@ -55,7 +55,7 @@ func CheckUser(usr *User) int {
 
 func AllTopics() []Topic {
 	var topics []Topic
-	_, err := ORM.QueryTable((*Topic)(nil)).All(&topics)
+	_, err := ORM.QueryTable((*Topic)(nil)).RelatedSel().All(&topics)
 	if err != nil {
 		return nil
 	}
@@ -64,7 +64,7 @@ func AllTopics() []Topic {
 
 func TopicById(id int) *Topic {
 	var topic Topic
-	if err := ORM.QueryTable((*Topic)(nil)).Filter("Id", id).One(&topic); err != nil {
+	if err := ORM.QueryTable((*Topic)(nil)).Filter("Id", id).RelatedSel().One(&topic); err != nil {
 		return nil
 	}
 	return &topic
@@ -72,7 +72,7 @@ func TopicById(id int) *Topic {
 
 func RemarksById(id int) []Remark {
 	var remarks []Remark
-	_, err := ORM.QueryTable((*Remark)(nil)).Filter("Topic__Id", id).All(&remarks)
+	_, err := ORM.QueryTable((*Remark)(nil)).Filter("Topic__Id", id).RelatedSel("User").All(&remarks)
 	if err != nil {
 		return nil
 	}
@@ -125,4 +125,12 @@ func RemarksByUserId(userid int) []Remark {
 		return nil
 	}
 	return remarks
+}
+
+func RemarkById(remarkid int) *Remark {
+	var remark Remark
+	if err := ORM.QueryTable((*Remark)(nil)).Filter("Id", remarkid).RelatedSel().One(&remark); err != nil {
+		return nil
+	}
+	return &remark
 }

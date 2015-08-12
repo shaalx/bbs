@@ -9,6 +9,8 @@
 			{{range .topics}}
 				<li>
 					<a href="/topic/{{.Id}}"><h3>#{{.Title}}#</h3></a>
+					<h4>@{{.User.Name}}</h4>
+					<a href="/deltopic/{{.Id}}">delete</a>
 					<h5>{{.Content}}</h5><br>
 				</li>
 				<hr>

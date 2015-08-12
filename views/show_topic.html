@@ -5,6 +5,7 @@
 		{{$topicid := .topic.Id}}
 		{{with .topic}}
 			<h3>#{{.Title}}#</h3>
+			<h4>@{{.User.Name}}</h4>
 			<h5>{{.Content}}</h5><br>
 			<a href="/remark/{{.Id}}">remark</a>
 		{{end}}
@@ -14,6 +15,8 @@
 				{{range .remarks}}
 					<li>
 						<h6>[{{.Content}}]</h6>
+						<h6>@{{.User.Name}}</h6>
+						<a href="/topic/{{.Topic.Id}}/delremark/{{.Id}}">delete</a>
 					</li>
 				{{end}}
 			</ul>
