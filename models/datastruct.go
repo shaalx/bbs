@@ -5,9 +5,8 @@ import (
 )
 
 type User struct {
-	Id int
-	// Topic    *Topic `orm:rel(one)`
-	Name     string `form:"username" orm:"unique;pk"`
+	Id       int    `orm:"id;pk" form:"-"`
+	Name     string `form:"username" orm:"unique"`
 	Passwd   string `form:"password" orm:"passwd"`
 	RePasswd string `form:"repassword" orm:"-"`
 	Xsrf     string `form:"_xsrf" orm:"-"`
@@ -24,15 +23,15 @@ func (u *User) Check() int {
 	return CheckUser(u)
 }
 
-func (u *User) TabelUnique() [][]string {
-	return [][]string{
-		[]string{"Name"},
-	}
-}
+// func (u *User) TabelUnique() [][]string {
+// 	return [][]string{
+// 		[]string{"Name"},
+// 	}
+// }
 
 type Topic struct {
 	Id      int    `orm:"id;pk" form:"-"`
-	Userid  int    `orm:"userid" form:"-"`
+	User    *User  `orm:"rel(fk);null;on_delete(cascade)" form:"-"`
 	Title   string `orm:"title" form:"title"`
 	Content string `orm:"content;null" form:"content"`
 }
@@ -43,9 +42,9 @@ func (t *Topic) Publish() error {
 
 type Remark struct {
 	Id      int    `orm:"id;pk" form:"-"`
-	Topicid int    `orm:"topicid" form:"topicid"`
-	Userid  int    `orm:"userid" form:"-"`
+	User    *User  `orm:"rel(fk);null;on_delete(cascade)"`
 	Content string `orm:"content" form:"content"`
+	Topic   *Topic `orm:"rel(fk);null;on_delete(cascade)"`
 }
 
 func (r *Remark) Publish() error {

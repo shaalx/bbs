@@ -27,11 +27,10 @@ func (c *RegisterController) Register() {
 	if valid.HasErrors() {
 		c.Abort("401")
 	}
-	err := models.RegisterUser(&usr)
-	if nil != err {
-		beego.Debug(err)
+	n := models.RegisterUser(&usr)
+	if n <= 0 {
 		c.Abort("401")
 	}
-	c.MainController.LoginSetSession(usr.Id)
+	c.MainController.LoginSetSession(n)
 	c.MainController.Get()
 }

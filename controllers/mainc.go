@@ -29,7 +29,7 @@ func (c *MainController) LoadLogin() {
 func (c *MainController) Login() {
 	var usr models.User
 	err := c.ParseForm(&usr)
-	beego.Debug(usr, err)
+	beego.Debug("login user:", usr, err)
 	if err != nil {
 		c.Abort("403")
 	}
@@ -51,10 +51,10 @@ func (c *MainController) LoadPublishTopic() {
 func (c *MainController) PublishTopic() {
 	var topic models.Topic
 	c.ParseForm(&topic)
-	topic.Userid = c.CurUser().Id
-	beego.Debug(topic)
+	topic.User = c.CurUser()
+	beego.Debug("publishing topic:", topic)
 	perr := topic.Publish()
-	beego.Debug(perr)
+	beego.Debug("published err:", perr)
 	if perr != nil {
 		c.Abort("400")
 	}
@@ -73,10 +73,13 @@ func (c *MainController) LoadRemarkTopic() {
 func (c *MainController) RemarkTopic() {
 	var remark models.Remark
 	c.ParseForm(&remark)
-	remark.Userid = c.CurUser().Id
-	beego.Debug(remark)
+	remark.User = c.CurUser()
+	var topicid int
+	c.Ctx.Input.Bind(&topicid, ":id")
+	remark.Topic = models.TopicById(topicid)
+	beego.Debug("topic remarking:", remark)
 	perr := remark.Publish()
-	beego.Debug(perr)
+	beego.Debug("remarked err:", perr)
 	if perr != nil {
 		c.Abort("400")
 	}
@@ -87,7 +90,6 @@ func (c *MainController) RemarkTopic() {
 func (c *MainController) ShowTopic() {
 	var idint int
 	c.Ctx.Input.Bind(&idint, ":id")
-	beego.Debug(idint)
 	c.Data["topic"] = models.TopicById(idint)
 	c.Data["remarks"] = models.RemarksById(idint)
 	c.TplNames = "show_topic.html"
@@ -96,7 +98,7 @@ func (c *MainController) ShowTopic() {
 func (c *MainController) Prepare() {
 	uri := c.Ctx.Request.RequestURI
 	beego.Notice(uri)
-	if strings.EqualFold(uri, "/publish") || strings.Contains(uri, "/remark") {
+	if strings.EqualFold(uri, "/publish") || strings.Contains(uri, "/remark") || strings.Contains(uri, "/del") {
 		c.CheckLogin()
 	}
 }
@@ -108,7 +110,7 @@ func (c *MainController) CheckLogin() {
 	}
 	sessid := sess.Get("gosessionid")
 	beego.Debug(sessid)
-	if sessid == nil || !strings.EqualFold(fmt.Sprintf("%v", sessid), "LOGIN_USER") {
+	if sessid == nil || strings.Contains(fmt.Sprintf("%v", sessid), "_") {
 		c.Abort("401")
 	}
 }
@@ -119,8 +121,8 @@ func (c *MainController) LoginSetSession(usrid int) {
 		c.Abort("401")
 	}
 
-	sess.Set("gosessionid", "LOGIN_USER")
-	sess.Set("current_user", usrid)
+	sess.Set("gosessionid", usrid)
+	beego.Debug("set [gosessionid]----->", usrid)
 	sess.SessionRelease(c.Ctx.ResponseWriter)
 }
 
@@ -130,6 +132,7 @@ func (c *MainController) LogoutSetSession() {
 		c.Abort("401")
 	}
 	sess.Set("gosessionid", "_")
+	beego.Debug("set [gosessionid]-----> _")
 	sess.SessionRelease(c.Ctx.ResponseWriter)
 }
 
@@ -145,45 +148,52 @@ func (c *MainController) CurUser() *models.User {
 		c.Abort("401")
 	}
 
-	iuserid := sess.Get("current_user")
+	iuserid := sess.Get("gosessionid")
+	beego.Debug("get [gosessionid] <------- ", iuserid)
 	if iuserid == nil {
-		iuserid = "1"
+		c.Abort("401")
 	}
 	userid := fmt.Sprintf("%v", iuserid)
 	id, err := strconv.Atoi(userid)
 	if err != nil {
-		id = 1
+		c.Abort("401")
 	}
 	if id <= 0 {
-		id = 1
+		c.Abort("401")
 	}
 	usr := models.UserById(id)
 	if nil == usr {
 		c.Abort("500")
 	}
-	beego.Notice(usr)
+	beego.Debug("current user ----> ", *usr)
 	return usr
 }
 
-// @router /topic/:topicid:int/del/:remarkid:int
-func (c *MainController) RemarkDel() {
+// @router /topic/:topicid:int/delremark/:remarkid:int
+func (c *MainController) DelRemark() {
 	var topicid int
 	var remarkid int
 	c.Ctx.Input.Bind(&topicid, ":topicid")
 	c.Ctx.Input.Bind(&remarkid, ":remarkid")
 	deled := models.DelRemardById(remarkid)
-	beego.Debug(deled)
-	// c.ShowTopic()
-	// c.Redirect(fmt.Sprintf("/topic/%d", topicid), 200)
+	beego.Debug("delremark:", deled)
 	c.Get()
 }
 
-// @router /topicdel/:id:int
-func (c *MainController) TopicDel() {
+// @router /deltopic/:topicid:int
+func (c *MainController) DelTopic() {
 	var topicid int
-	c.Ctx.Input.Bind(&topicid, ":id")
+	c.Ctx.Input.Bind(&topicid, ":topicid")
 	deled := models.DelTopicById(topicid)
-	beego.Debug(deled)
-	// c.Redirect("/", 200)
+	beego.Debug("deltopic:", deled)
 	c.Get()
+}
+
+// @router /user [get]
+func (c *MainController) User() {
+	user := c.CurUser()
+	c.Data["user"] = user
+	c.Data["topics"] = models.TopicsById(user.Id)
+	c.Data["remarks"] = models.RemarksByUserId(user.Id)
+	c.TplNames = "user.html"
 }

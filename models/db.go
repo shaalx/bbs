@@ -17,9 +17,12 @@ func init() {
 
 var ORM orm.Ormer
 
-func RegisterUser(usr *User) error {
-	_, err := ORM.Insert(usr)
-	return err
+func RegisterUser(usr *User) int {
+	n, err := ORM.Insert(usr)
+	if err != nil {
+		return -1
+	}
+	return int(n)
 }
 
 func PublishTopic(topic *Topic) error {
@@ -69,7 +72,7 @@ func TopicById(id int) *Topic {
 
 func RemarksById(id int) []Remark {
 	var remarks []Remark
-	_, err := ORM.QueryTable((*Remark)(nil)).Filter("Topicid", id).All(&remarks)
+	_, err := ORM.QueryTable((*Remark)(nil)).Filter("Topic__Id", id).All(&remarks)
 	if err != nil {
 		return nil
 	}
@@ -80,6 +83,9 @@ func UserById(id int) *User {
 	var usr User
 	if err := ORM.QueryTable((*User)(nil)).Filter("Id", id).One(&usr); err != nil {
 		fmt.Println(err, id)
+		return nil
+	}
+	if usr.Id <= 0 {
 		return nil
 	}
 	fmt.Println(usr)
@@ -100,4 +106,23 @@ func DelTopicById(id int) bool {
 		return false
 	}
 	return true
+}
+
+func TopicsById(userid int) []Topic {
+	var topics []Topic
+	if _, err := ORM.QueryTable((*Topic)(nil)).Filter("User__Id", userid).All(&topics); err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return topics
+}
+
+func RemarksByUserId(userid int) []Remark {
+	var remarks []Remark
+	// if _, err := ORM.QueryTable((*Remark)(nil)).Filter("User__Id", userid).RelatedSel("topic").All(&remarks); err != nil {
+	if _, err := ORM.QueryTable((*Remark)(nil)).Filter("User__Id", userid).RelatedSel().All(&remarks); err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return remarks
 }

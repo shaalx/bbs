@@ -4,18 +4,16 @@
 		<h2>BBS Topic</h2>
 		{{$topicid := .topic.Id}}
 		{{with .topic}}
-			<h3>{{.Title}}</h3>
+			<h3>#{{.Title}}#</h3>
 			<h5>{{.Content}}</h5><br>
 			<a href="/remark/{{.Id}}">remark</a>
-			<a href="/topicdel/{{.Id}}">delete</a>
 		{{end}}
 
 		<div>
 			<ul>
 				{{range .remarks}}
 					<li>
-						<h6>{{.Content}}</h6>
-						<a href="/topic/{{$topicid}}/del/{{.Id}}">del</a>
+						<h6>[{{.Content}}]</h6>
 					</li>
 				{{end}}
 			</ul>

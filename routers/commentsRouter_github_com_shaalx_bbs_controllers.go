@@ -71,15 +71,22 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"] = append(beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"],
 		beego.ControllerComments{
-			"RemarkDel",
-			`/topic/:topicid:int/del/:remarkid:int`,
+			"DelRemark",
+			`/topic/:topicid:int/delremark/:remarkid:int`,
 			[]string{"get"},
 			nil})
 
 	beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"] = append(beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"],
 		beego.ControllerComments{
-			"TopicDel",
-			`/topicdel/:id:int`,
+			"DelTopic",
+			`/deltopic/:topicid:int`,
+			[]string{"get"},
+			nil})
+
+	beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"] = append(beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"],
+		beego.ControllerComments{
+			"User",
+			`/user`,
 			[]string{"get"},
 			nil})
 
