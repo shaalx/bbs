@@ -5,10 +5,12 @@
 		<h3>Published Topics</h3><br>
 		{{range .topics}}
 			<a href="/topic/{{.Id}}"><h3>#{{.Title}}#</h3><br></a>
-			<h5>{{.Content}}</h5><hr>
+			<h5>{{.Content}}</h5>
+			{{.Create}}
 			<a href="/deltopic/{{.Id}}">delete</a>
+			<hr>
 		{{end}}
-		<hr><hr>
+		<hr>
 		<h3>Topic Remarks @{{.user.Name}}</h3><br>
 		{{range .remarks}}
 			
@@ -16,6 +18,7 @@
 			<h3>@{{.Topic.User.Name}}</h3><br>
 			<h5>{{.Topic.Content}}</h5>
 			<h4>[{{.Content}}]</h4>
+			{{.Create}}
 			<a href="/topic/{{.Topic.Id}}/delremark/{{.Id}}">delete</a>
 			<hr>
 		{{end}}

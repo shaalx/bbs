@@ -1,17 +1,15 @@
 {{template "header.html" .}}
 <div>
-	<h1>BBS</h1>
-	<a href="/publish">Publish</a>
-
 	<div>
-		<h2>BBS Topic</h2>
+		<h3>Topics</h3>
 		<ul>
 			{{range .topics}}
 				<li>
 					<a href="/topic/{{.Id}}"><h3>#{{.Title}}#</h3></a>
 					<h4>@{{.User.Name}}</h4>
-					<a href="/deltopic/{{.Id}}">delete</a>
 					<h5>{{.Content}}</h5><br>
+					{{.Create}}
+					<a href="/deltopic/{{.Id}}">delete</a>
 				</li>
 				<hr>
 			{{end}}

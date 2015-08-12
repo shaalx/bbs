@@ -6,14 +6,16 @@ passwd char(64) not null
 
 create table topic(
 id int auto_increment primary key,
-userid int not null,
+user_id int not null,
 title char(100) not null,
-content text
+content text,
+create datetime
 )default charset=utf8;
 
 create table remark(
 id int auto_increment primary key,
-userid int not null,
-topicid int not null,
-content text
+user_id int not null,
+topic_id int not null,
+content text,
+create datetime
 )default charset=utf8;

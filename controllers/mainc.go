@@ -62,14 +62,6 @@ func (c *MainController) PublishTopic() {
 	c.Get()
 }
 
-// @router /remark/:id:int [get]
-func (c *MainController) LoadRemarkTopic() {
-	id := c.Ctx.Input.Param(":id")
-	c.Data["topicid"] = id
-	c.Data["xsrfdata"] = template.HTML(c.XsrfFormHtml())
-	c.TplNames = "remark.html"
-}
-
 // @router /remark/:id:int [post]
 func (c *MainController) RemarkTopic() {
 	var remark models.Remark
@@ -91,9 +83,10 @@ func (c *MainController) RemarkTopic() {
 func (c *MainController) ShowTopic() {
 	var idint int
 	c.Ctx.Input.Bind(&idint, ":id")
+	c.Data["xsrfdata"] = template.HTML(c.XsrfFormHtml())
 	c.Data["topic"] = models.TopicById(idint)
 	c.Data["remarks"] = models.RemarksById(idint)
-	c.TplNames = "show_topic.html"
+	c.TplNames = "topic.html"
 }
 
 func (c *MainController) Prepare() {

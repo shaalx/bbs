@@ -43,13 +43,6 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"] = append(beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"],
 		beego.ControllerComments{
-			"LoadRemarkTopic",
-			`/remark/:id:int`,
-			[]string{"get"},
-			nil})
-
-	beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"] = append(beego.GlobalControllerRouter["github.com/shaalx/bbs/controllers:MainController"],
-		beego.ControllerComments{
 			"RemarkTopic",
 			`/remark/:id:int`,
 			[]string{"post"},

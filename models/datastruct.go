@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/astaxie/beego/validation"
+	"time"
 )
 
 type User struct {
@@ -30,10 +31,11 @@ func (u *User) Check() int {
 // }
 
 type Topic struct {
-	Id      int    `orm:"id;pk" form:"-"`
-	User    *User  `orm:"rel(fk);null;on_delete(cascade)" form:"-"`
-	Title   string `orm:"title" form:"title"`
-	Content string `orm:"content;null" form:"content"`
+	Id      int       `orm:"id;pk" form:"-"`
+	User    *User     `orm:"rel(fk);null;on_delete(cascade)" form:"-"`
+	Title   string    `orm:"title" form:"title"`
+	Content string    `orm:"content;null" form:"content"`
+	Create  time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
 func (t *Topic) Publish() error {
@@ -41,10 +43,11 @@ func (t *Topic) Publish() error {
 }
 
 type Remark struct {
-	Id      int    `orm:"id;pk" form:"-"`
-	User    *User  `orm:"rel(fk);null;on_delete(cascade)"`
-	Content string `orm:"content" form:"content"`
-	Topic   *Topic `orm:"rel(fk);null;on_delete(cascade)"`
+	Id      int       `orm:"id;pk" form:"-"`
+	User    *User     `orm:"rel(fk);null;on_delete(cascade)" form:"-"`
+	Content string    `orm:"content" form:"content"`
+	Topic   *Topic    `orm:"rel(fk);null;on_delete(cascade)" form:"-"`
+	Create  time.Time `orm:"auto_now_add;type(datetime)"`
 }
 
 func (r *Remark) Publish() error {

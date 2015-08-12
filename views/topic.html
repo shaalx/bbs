@@ -7,8 +7,16 @@
 			<h3>#{{.Title}}#</h3>
 			<h4>@{{.User.Name}}</h4>
 			<h5>{{.Content}}</h5><br>
-			<a href="/remark/{{.Id}}">remark</a>
+			{{.Create}}<br>
+			<hr>
 		{{end}}
+		<div>
+			<form id="remarkform" action="/remark/{{$topicid}}" method="post">
+				{{.xsrfdata}}
+				<h4>Remark:</h4>	<textarea name="content" rows="5" cols="100"></textarea><br><br>
+				<input type="submit">
+			</form>
+		</div>
 
 		<div>
 			<ul>
@@ -16,6 +24,7 @@
 					<li>
 						<h6>[{{.Content}}]</h6>
 						<h6>@{{.User.Name}}</h6>
+						{{.Create}}
 						<a href="/topic/{{.Topic.Id}}/delremark/{{.Id}}">delete</a>
 					</li>
 				{{end}}
