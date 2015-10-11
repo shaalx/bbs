@@ -35,7 +35,7 @@ type Topic struct {
 	User    *User     `orm:"rel(fk);null;on_delete(cascade)" form:"-"`
 	Title   string    `orm:"title" form:"title"`
 	Content string    `orm:"content;null" form:"content"`
-	Create  time.Time `orm:"auto_now_add;type(datetime)"`
+	Create  time.Time `orm:"auto_now_add;column(created);type(datetime)"`
 }
 
 func (t *Topic) Publish() error {
@@ -47,7 +47,7 @@ type Remark struct {
 	User    *User     `orm:"rel(fk);null;on_delete(cascade)" form:"-"`
 	Content string    `orm:"content" form:"content"`
 	Topic   *Topic    `orm:"rel(fk);null;on_delete(cascade)" form:"-"`
-	Create  time.Time `orm:"auto_now_add;type(datetime)"`
+	Create  time.Time `orm:"auto_now_add;column(created);type(datetime)"`
 }
 
 func (r *Remark) Publish() error {

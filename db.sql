@@ -9,7 +9,7 @@ id int auto_increment primary key,
 user_id int not null,
 title char(100) not null,
 content text,
-create datetime
+created datetime
 )default charset=utf8;
 
 create table remark(
@@ -17,5 +17,5 @@ id int auto_increment primary key,
 user_id int not null,
 topic_id int not null,
 content text,
-create datetime
+created datetime
 )default charset=utf8;
