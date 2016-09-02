@@ -14,7 +14,7 @@ type User struct {
 }
 
 func (u *User) Valid(v *validation.Validation) {
-	v.Required(u.Name, "shaalx")
+	v.Required(u.Name, "toukii")
 	if u.Passwd != u.RePasswd {
 		v.SetError("passwd", "repassword does not equal.")
 	}
